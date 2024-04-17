@@ -10,6 +10,19 @@ user_score = 0
 ai_score = 0
 sequence = []
 
+# Hardcoded username and password
+username = 'admin'
+password = 'password'
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if 'username' in data and 'password' in data:
+        if data['username'] == username and data['password'] == password:
+            return jsonify({'success': True, 'message': 'Login successful'})
+    return jsonify({'success': False, 'message': 'Invalid username or password'})
+
+
 @app.route('/play', methods=['POST'])
 def play():
     global user_score, ai_score, sequence
