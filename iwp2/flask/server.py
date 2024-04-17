@@ -33,8 +33,8 @@ def play():
 
 def rps(user_move, sequence):
     prediction = random.choice([0, 1, 2])
-    sequence.append(user_move)
     prediction = predict_next_element(sequence)
+    sequence.append(user_move)
     return prediction 
 
 import random
@@ -69,10 +69,11 @@ def predict_next_element(sequence):
     predicted_element = max(probabilities[last_element], key=probabilities[last_element].get)
     
     # Map predicted integer back to its respective string
-    predicted_move = inverse_sequence_mapping[predicted_element]
+    predicted_element_string=win[predicted_element]
+    predicted_move = inverse_sequence_mapping[predicted_element_string]
     return predicted_move
 
-
+win = {0:1,1:2,2:0}
 def determine_winner(user_choice, computer_choice):
     user_choice = user_choice.capitalize()
     # Rock beats scissors, scissors beats paper, paper beats rock

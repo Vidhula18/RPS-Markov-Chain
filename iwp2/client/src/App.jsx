@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Rules from './pages/Rules';
 import Header from './components/Header';
-
+import login from './pages/login';
 export default function App() {
   return (
     <BrowserRouter>
