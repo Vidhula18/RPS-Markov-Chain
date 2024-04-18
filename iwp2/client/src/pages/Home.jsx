@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import wallpaper from './wallpaper1.jpg';
-import rockImage from './rock.png';
-import paperImage from './paper.png';
-import scissorImage from './scissor.png';
+import wallpaper from './newbg.jpg';
+import scissorright from './scissorr.png';
+import stoneright from './stoner.png';
+import paperright from './paperr.png';
+import scissorleft from './scissorl.png';
+import stoneleft from './stonel.png';
+import paperleft from './paperl.png';
 
 export default function Home() {
   const [selectedOption, setSelectedOption] = useState('');
@@ -13,7 +16,9 @@ export default function Home() {
   const [aiScore, setAiScore] = useState(0);
   const [showWinnerPopout, setShowWinnerPopout] = useState(false);
   const [imageURL, setImageURL] = useState('');
-  const [aiChoiceImage, setAiChoiceImage] = useState(null); // State to hold AI choice image
+  const [aiChoiceImage, setAiChoiceImage] = useState(null);
+  const [aiChoiceAnimation, setAiChoiceAnimation] = useState('');
+  const [userChoiceAnimation, setUserChoiceAnimation] = useState('');
 
   const handleClick = async (option) => {
     setSelectedOption(option);
@@ -21,13 +26,19 @@ export default function Home() {
 
     switch (option) {
       case 'Rock':
-        newImageURL = rockImage;
+        newImageURL = stoneright;
+        setAiChoiceAnimation('animate-slideInLeft');
+        setUserChoiceAnimation('animate-slideInRight');
         break;
       case 'Paper':
-        newImageURL = paperImage;
+        newImageURL = paperright;
+        setAiChoiceAnimation('animate-slideInLeft');
+        setUserChoiceAnimation('animate-slideInRight');
         break;
       case 'Scissors':
-        newImageURL = scissorImage;
+        newImageURL = scissorright;
+        setAiChoiceAnimation('animate-slideInLeft');
+        setUserChoiceAnimation('animate-slideInRight');
         break;
       default:
         break;
@@ -37,22 +48,21 @@ export default function Home() {
 
     try {
       const response = await axios.post('http://localhost:5000/play', { option: option.toLowerCase() });
-      setCapitalizedOption(response.data.user_choice); // Set capitalized user choice
+      setCapitalizedOption(response.data.user_choice);
       setWinner(response.data.winner);
       setUserScore(response.data.user_score);
       setAiScore(response.data.ai_score);
       setShowWinnerPopout(true);
 
-      // Map AI choice to image
       switch (response.data.computer_choice) {
         case 'Rock':
-          setAiChoiceImage(rockImage);
+          setAiChoiceImage(stoneleft);
           break;
         case 'Paper':
-          setAiChoiceImage(paperImage);
+          setAiChoiceImage(paperleft);
           break;
         case 'Scissors':
-          setAiChoiceImage(scissorImage);
+          setAiChoiceImage(scissorleft);
           break;
         default:
           break;
@@ -60,6 +70,8 @@ export default function Home() {
 
       setTimeout(() => {
         setShowWinnerPopout(false);
+        setAiChoiceAnimation('');
+        setUserChoiceAnimation('');
       }, 1000);
     } catch (error) {
       console.error('Error:', error);
@@ -75,13 +87,13 @@ export default function Home() {
           <div className="flex flex-col justify-center items-center bg-transparent ">
             {/* AI Choice Image */}
             {aiChoiceImage && (
-              <div className="flex justify-center items-center bg-transparent">
-                <img src={aiChoiceImage} alt="AI Choice" className="w-32 h-auto mt-5" style={{ width: '128px' }} />
+              <div className={`flex justify-start items-center bg-transparent w-full ${aiChoiceAnimation}`}>
+                <img src={aiChoiceImage} alt="AI Choice" className="w-45 h-auto mt-5" />
               </div>
             )}
             <h2 className="text-lg font-semibold mb-2">AI Score</h2>
-            <div className="bg-gray-200 bg-opacity-50 shadow-md rounded-md p-4 w-48 h-26">
-              <p className="text-3xl font-bold mt-2">{aiScore}</p>
+            <div className="bg-gray-200 bg-opacity-50 shadow-md rounded-md p-4 w-48 h-26 flex justify-center items-center">
+              <p className="text-3xl font-bold">{aiScore}</p>
             </div>
           </div>
 
@@ -89,13 +101,13 @@ export default function Home() {
           <div className="flex flex-col justify-center items-center bg-transparent">
             {/* User Choice Image */}
             {imageURL && (
-              <div className="flex justify-center items-center bg-transparent">
-                <img src={imageURL} alt="User Choice" className="w-32 h-auto mt-5" style={{ width: '128px' }} />
+              <div className={`flex justify-end items-center bg-transparent w-full ${userChoiceAnimation}`}>
+                <img src={imageURL} alt="User Choice" className="w-45 h-auto mt-5" />
               </div>
             )}
             <h2 className="text-lg font-semibold mb-2">User Score</h2>
-            <div className="bg-blue-200 bg-opacity-50 shadow-md rounded-md p-4 w-48 h-26">
-              <p className="text-3xl font-bold mt-2">{userScore}</p>
+            <div className="bg-gray-200 bg-opacity-50 shadow-md rounded-md p-4 w-48 h-26 flex justify-center items-center">
+              <p className="text-3xl font-bold">{userScore}</p>
             </div>
           </div>
         </div>
@@ -110,12 +122,12 @@ export default function Home() {
         )}
         {showWinnerPopout && winner && (
           <div className="flex justify-center fixed top-0 left-0 right-0 bottom-0 items-center">
-            <div className="bg-green-200 bg-opacity-50 shadow-md rounded-md p-4 mt-5 w-64">
-              <h2 className="text-lg font-semibold">Winner</h2>
+            <div className="bg-green-200 bg-opacity-50 shadow-md rounded-md p-4 mt-5 w-64 xl:p-6"> {/* Add padding utility class here */}
               <p className="text-3xl font-bold mt-2">{winner}</p>
             </div>
           </div>
         )}
+
 
         <div className="flex-1 grid grid-cols-2 bg-transparent">
           <div></div>
@@ -125,7 +137,7 @@ export default function Home() {
                 type="button"
                 className="text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 mr-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
                 onClick={() => handleClick('Rock')}
-                style={{ width: '100px' }}
+                style={{ width: '100px', backgroundColor: '#424242' }} 
               >
                 Rock
               </button>
@@ -133,7 +145,7 @@ export default function Home() {
                 type="button"
                 className="text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 mr-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
                 onClick={() => handleClick('Paper')}
-                style={{ width: '100px' }}
+                style={{ width: '100px', backgroundColor: '#424242' }} 
               >
                 Paper
               </button>
@@ -141,7 +153,7 @@ export default function Home() {
                 type="button"
                 className="text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 mr-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
                 onClick={() => handleClick('Scissors')}
-                style={{ width: '100px' }}
+                style={{ width: '100px', backgroundColor: '#424242' }} 
               >
                 Scissors
               </button>

@@ -5,6 +5,8 @@ import Rules from './pages/Rules';
 import Header from './components/Header';
 import Login from './pages/login'; // Import the Login component
 
+
+
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
