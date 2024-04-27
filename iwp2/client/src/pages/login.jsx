@@ -17,7 +17,7 @@ const Login = ({ onLogin }) => {
         body: JSON.stringify({ username, password }),
       });
       const data = await response.json();
-      if (response.ok) {
+      if (response.ok && data.success) { // Check if the response is okay and login was successful
         // Login successful, set isLoggedIn to true
         onLogin();
         navigate('/');
